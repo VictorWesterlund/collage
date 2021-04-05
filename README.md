@@ -1,13 +1,11 @@
 # Collage
 **Create a collage of an image using smaller images**
 
-This script attempts to find images of similar color to each pixel of an input image.
-
 ![demo](https://storage.googleapis.com/public.victorwesterlund.com/github/VictorWesterlund/collage/demo.png)
 
 [Full resolution output](https://storage.googleapis.com/public.victorwesterlund.com/github/VictorWesterlund/collage/demo_full.jpg) (4000x4000px)
 
-## Create your own collage
+## Create your own
 
 ### Prerequisites
 
@@ -21,7 +19,7 @@ sudo apt-get install python3-pip
 python3 -m pip install -r requirements.txt
 ```
 
-### Using collage
+### Create a collage
 
 1. Add JPG images to use as samples to the `samples/` folder. [9999 free sample images](#download-sample-images).
 
