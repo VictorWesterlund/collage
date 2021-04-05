@@ -1,7 +1,8 @@
 __pycache__
+__sample__.json
 
 input/*
 samples/*
-mem/*
+memory/*
 
 !*/.placeholder
