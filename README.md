@@ -1,7 +1,7 @@
 # Collage
 **Create a collage of an image using smaller images**
 
-![demo](https://storage.googleapis.com/public.victorwesterlund.com/github/VictorWesterlund/collage/demo.png)
+![demo](https://storage.googleapis.com/public.victorwesterlund.com/github/VictorWesterlund/collage/demo_0.png)
 
 [Full resolution output](https://storage.googleapis.com/public.victorwesterlund.com/github/VictorWesterlund/collage/demo_full.jpg) (4000x4000px)
 
