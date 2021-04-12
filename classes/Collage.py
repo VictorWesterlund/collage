@@ -62,7 +62,7 @@ class Collage():
 		offset_y = 0
 
 		i = 0
-		print("Pasing samples..")
+		print("Pasting samples..")
 		# Apply each sample by raster scanning
 		for y in range(1,self.template.size[0]):
 			offset_x = 0
