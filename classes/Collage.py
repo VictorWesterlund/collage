@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageOps
 from bisect import bisect_left
 
 # Create instructions for the Collage constructor
@@ -6,6 +6,7 @@ class Schematic():
 	def __init__(self,template,samples):
 		self.template = template
 		self.samples = samples
+		self.length = 0
 
 		self.schematic = {}
 		self.create_schematic()
@@ -21,14 +22,16 @@ class Schematic():
 
 		return samples[pos]
 
+	# Build a 2-Dimensional list of matches
 	def create_schematic(self):
-		for x in range(1,self.template.size[0]):
-			self.schematic[x] = {}
-			for y in range(1,self.template.size[1]):
-				r,g,b = self.template.getpixel((x,y))
-				eyedropper = "%02x%02x%02x" % (r,g,b)
+		for y in range(1,self.template.size[0]):
+			self.schematic[y] = {}
+			for x in range(1,self.template.size[1]):
+				r,g,b = self.template.getpixel((x,y)) # Extract RGB from current pixel
+				eyedropper = "%02x%02x%02x" % (r,g,b) # Convert RGB to HEX
 
-				self.schematic[x][y] = self.query_sample(eyedropper)
+				self.schematic[y][x] = self.query_sample(eyedropper)
+				self.length += 1
 				print(f"Found best match for index [{x},{y}] ",end="\r",flush="True")
 		print("")
 
@@ -53,16 +56,18 @@ class Collage():
 
 	# Assemble the collage
 	def create_collage(self):
-		schematic = Schematic(self.template,self.samples).schematic
+		build = Schematic(self.template,self.samples)
 
 		offset_x = 0
 		offset_y = 0
 
+		i = 0
+		print("Pasing samples..")
 		# Apply each sample by raster scanning
-		for x in range(1,self.template.size[0]):
+		for y in range(1,self.template.size[0]):
 			offset_x = 0
-			for y in range(1,self.template.size[1]):
-				key = schematic[x][y] # Get sample index for current pixel
+			for x in range(1,self.template.size[1]):
+				key = build.schematic[y][x] # Get sample index for current pixel
 				resolve_posix = self.samples[key] # Convert sample index to sample set index
 				
 				# Load and resize the requested sample from disk
@@ -71,13 +76,20 @@ class Collage():
 
 				# Add the loaded sample to the collage
 				self.collage = self.collage.copy()
-				self.collage.paste(sample,(offset_x,offset_y))
+				self.collage.paste(sample,(offset_y,offset_x))
 
 				offset_x += self.size[0]
 
-				print(f"Pasted sample at index [{x},{y}] ",end="\r",flush="True")
+				progress = round(i / build.length * 100,2)
+				print(f"Progress: (%) {progress} ",end="\r",flush="True")
+				i += 1
 			offset_y += self.size[1]
 		print("")
+		print("Collage created")
+
+		# Correct rotation and reflection
+		self.collage = self.collage.rotate(-90)
+		self.collage = ImageOps.mirror(self.collage)
 
 	# Save collage to disk
 	def put(self,dest):

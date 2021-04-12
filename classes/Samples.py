@@ -1,7 +1,7 @@
 import zlib
 import json
 from collections import OrderedDict
-from .Color import AverageColor
+from .Color import AverageColor, DominantColor
 from pathlib import Path
 
 # Generate a unique identifier for the current sample set
@@ -42,14 +42,9 @@ class Samples(SamplesFingerprint):
 		self.samples = {} # HEX from color calc algorithm
 
 		super(Samples,self).__init__()
+		self.run(force)
 
-		try:
-			self.load_sample_set()
-		except:
-			self.map_color()
-			self.save_sample_set()
-
-	# Get the pixel value for each sample using a desired algorithm
+	# Get the pixel value for each sample using a desired color extraction algorithm
 	def map_color(self):
 		for i,sample in enumerate(self.samples_posix):
 			color = AverageColor(sample).hex() # Get the average color of a sample as HEX
@@ -71,3 +66,15 @@ class Samples(SamplesFingerprint):
 		with open(self.memory) as f:
 			self.samples = json.load(f)
 		print(f"Loaded {len(self.samples)} samples from set {self.hash}")
+
+	def run(self,force):
+		if(force):
+			self.map_color()
+			self.save_sample_set()
+
+		# Attempt to load sample set from memory
+		try:
+			self.load_sample_set()
+		except:
+			self.map_color()
+			self.save_sample_set()
